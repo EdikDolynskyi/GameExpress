@@ -6,7 +6,7 @@ var Vector = require('../lib/vector');
 
 var cg = require('../singleton/currentGame');
 
-router.post('/:id/:xCoordinate/:yCoordinate', function(req, res) {
+router.post('/:id', function(req, res) {
     var currentGame = cg.get();
     if (!currentGame)
         return res.end('There no game');
@@ -15,8 +15,8 @@ router.post('/:id/:xCoordinate/:yCoordinate', function(req, res) {
     var x = parseInt(req.params.xCoordinate);
     var y = parseInt(req.params.yCoordinate);
 
-    if (isNaN(x) || isNaN(y))
-        return res.end('X and Y coordinates should be numbers');
+    if (isNaN(id))
+        return res.end('id  should be numbers');
 
     var man = currentGame.findFighter(id);
     if (!man)
