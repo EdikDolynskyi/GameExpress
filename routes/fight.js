@@ -3,6 +3,7 @@ var router = express.Router();
 
 var cg = require('../singleton/currentGame');
 
+/*
 router.get('/inrangeof/:id', function(req, res) {
     var currentGame = cg.get();
     if (!currentGame)
@@ -17,10 +18,11 @@ router.get('/inrangeof/:id', function(req, res) {
 
     res.json(enemiesInRange);
 });
+*/
 
-//router.post('/:id/:enemyId', function(req, res) {
-//    res.end('Ok, we fight');
-//});
+router.post('/:id/:enemyId', function(req, res) {
+    res.end('Ok, we fight');
+});
 
 
 module.exports = router;

@@ -37,7 +37,7 @@ router.post('/create', function (req, res) {
         cg.set(currentGame);
         var gameField = currentGame.gameField;
 
-        var opuRoute = new Route("FirstRoute", gameField, [new Vector(100, 100), new Vector(50, 100), new Vector(300, 700)]);
+        var opuRoute = new Route("FirstRoute", gameField, [new Vector(0, 0), new Vector(50, 100), new Vector(300, 700)]);
         currentGame.createFighter('Opu', new Vector(0, 0), true, false, opuRoute);
 
         var pishtiRoute = new Route("SecondRoute", gameField, [new Vector(10, 10), new Vector(50, 50), new Vector(300, 700)]);
