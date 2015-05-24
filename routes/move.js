@@ -6,51 +6,54 @@ var Vector = require('../lib/vector');
 
 var cg = require('../singleton/currentGame');
 
-router.post('/:id', function(req, res) {
-    var currentGame = cg.get();
-    if (!currentGame)
-        return res.end('There no game');
+router.post('/:_id', function(req, res) {
+    cg.get(function (game) {
+        if (!game)
+            return res.end('There no game');
 
-    var id = req.params.id;
-    //var x = parseInt(req.params.xCoordinate);
-    //var y = parseInt(req.params.yCoordinate);
+        var id = req.params._id;
 
-    if (isNaN(id))
-        return res.end('id  should be numbers');
+        if (isNaN(id))
+            return res.end('_id  should be numbers');
 
-    var man = currentGame.findFighter(id);
-    if (!man)
-        return res.end('There is no fighter with id: ' + id);
+        var man = game.findFighter(id);
+        if (!man)
+            return res.end('There is no fighter with _id: ' + id);
 
+        man.moveToRoute();
 
-    man.moveToRoute();
-
-    res.end(util.format('Ok, %s moved to point of route: (%s, %s)', man.name, man.route.points[1].x, man.route.points[1].y));
+        cg.set(game, function() {
+            res.end(util.format('Ok, %s moved to point of route: (%s, %s)', man.name, man.route.points[1].x, man.route.points[1].y));
+        });
+    });
 });
-router.post('/:id/:xCoordinate/:yCoordinate', function(req, res) {
-    var currentGame = cg.get();
-    if (!currentGame)
-        return res.end('There no game');
 
-    var id = req.params.id;
-    var x = parseInt(req.params.xCoordinate);
-    var y = parseInt(req.params.yCoordinate);
+router.post('/:_id/:xCoordinate/:yCoordinate', function(req, res) {
+    cg.get(function(game) {
+        if (!game)
+            return res.end('There no game');
 
-    if (isNaN(id))
-        return res.end('id  should be numbers');
+        var id = req.params._id;
+        var x = parseInt(req.params.xCoordinate);
+        var y = parseInt(req.params.yCoordinate);
 
-    if (isNaN(x) || isNaN(y))
-        return res.end('X and Y coordinates should be numbers');
+        if (isNaN(id))
+            return res.end('_id  should be numbers');
 
-    var man = currentGame.findFighter(id);
-    if (!man)
-        return res.end('There is no fighter with id: ' + id);
+        if (isNaN(x) || isNaN(y))
+            return res.end('X and Y coordinates should be numbers');
 
-    var point = new Vector(x, y);
-   // man.route.points.push(point);
-    man.moveTo(point);
+        var man = game.findFighter(id);
+        if (!man)
+            return res.end('There is no fighter with _id: ' + id);
 
-    res.end(util.format('Ok, %s moved to a new position : (%s, %s)', man.name, point.x, point.y));
+        var point = new Vector(x, y);
+        man.moveTo(point);
+
+        cg.set(game, function () {
+            res.end(util.format('Ok, %s moved to a new position : (%s, %s)', man.name, point.x, point.y));
+        });
+    });
 });
 
 

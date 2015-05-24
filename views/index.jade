@@ -2,4 +2,24 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p Hello My Friend!
+  p  Welcome to #{title}
+  p The Game use GET and POST requests, therefore, for the convenience  all requests, send by Postman, (better to adjust the type of query). Browser-URL uses only GET requests.
+  p  If you want to start playing this game now, first it is necessary to read the instructions. This game has several steps. So, all in one:
+  p     1. First you need to create a game:
+  b      'http://localhost:3000/game/create'  (POST)
+  p    At this stage, the game automatically will create two personages, all their characteristics and parameters. Later, you will be able to create personage and parameters own. To view the personages need to send the following request:
+  b      'http://localhost:3000/game/fighters'   (GET)
+  p    2. Then you start the game the following request:
+  b      'http://localhost:3000/game/start'   (POST)
+  p    3. So of you already have two personages (each has its own ID), it's time to test them. To start the movement should send the following:
+  b      'http://localhost:3000/move/0/5/7'   (POST)
+  p    where 0 - ID of personage, 5/7 - x and y coordinates.
+  p    4. To personage moving in a given direction, not necessarily always repeat the coordinates where to move (the personages do not suffer sclerosis). It is enough to specify command -
+  b      'http://localhost:3000/move/0'. (POST)
+  p    But the movement is possible only if you set the coordinates, where personage must move, but he has not come there. It is understood that early in the game necessarily given command movement of specified coordinates.
+  p    5. To the personages not just wandered here and there, you can allow them to fight. You need to send the following request:
+  b     'http://localhost:3000/fight/0/1', (POST)
+  p where 0 - is the ID of the personage that fight and 1 - is the ID of the personage, who gladly substitutes cheek. Please note, that each personage has a fighting distance, because the situation when one strikes, and the other not, quite normal.
+  p   The game ends when left alive, only one personage.
+  p   All results of commands and game results will be shown in the terminal your IDE.

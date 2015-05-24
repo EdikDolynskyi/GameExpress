@@ -1,26 +1,25 @@
 var util = require('util');
 var express = require('express');
+var mongoose = require('mongoose');
 var router = express.Router();
 
 var cg = require('../singleton/currentGame');
+require('../models/index.js');
 
-//router.get('/', function(req, res) {
-//   res.end('List of games');
-//});
 
 router.get('/fighters', function (req, res) {
-    var currentGame = cg.get();
-    if (!currentGame)
-        return res.end('There is no game!');
+    cg.get(function (game) {
+        if (!game)
+            return res.end('There is no game!');
 
-    res.write(util.format('Game: %s\n', currentGame.name));
-    currentGame.fighters.forEach(function (o) {
-        res.write(
-            util.format('id: %s name: %s\n', o.id, o.name)
-        );
+        res.write(util.format('Game: %s\n', game.name));
+        game.fighters.forEach(function (o) {
+            res.write(
+                util.format('_id: %s name: %s\n', o._id, o.name)
+            );
+        });
+        res.end();
     });
-
-    res.end();
 });
 
 router.post('/create', function (req, res) {
@@ -33,32 +32,32 @@ router.post('/create', function (req, res) {
 
     //Start game
     {
-        var currentGame = new Game('Opu vs Pishti');
-        cg.set(currentGame);
-        var gameField = currentGame.gameField;
+        var game = new Game('Opu vs Pishti');
+        var gameField = game.gameField;
 
-        var opuRoute = new Route("FirstRoute", gameField, [new Vector(0, 0), new Vector(50, 100), new Vector(300, 700)]);
-        currentGame.createFighter('Opu', new Vector(0, 0), true, false, opuRoute);
+        var opuRoute = new Route("FirstRoute", gameField, [new Vector(0, 0), new Vector(0, 0)]);
+        game.createFighter('Opu', new Vector(0, 0), true, false, opuRoute);
 
-        var pishtiRoute = new Route("SecondRoute", gameField, [new Vector(10, 10), new Vector(50, 50), new Vector(300, 700)]);
-        currentGame.createFighter('Pishti', new Vector(50, 50), true, true, pishtiRoute);
+        var pishtiRoute = new Route("SecondRoute", gameField, [new Vector(800, 600), new Vector(800, 600)]);
+        game.createFighter('Pishti', new Vector(0, 0), true, true, pishtiRoute);
+
+        cg.set(game, function () {
+            res.end('Game Created!');
+        });
     }
-
-    res.end('Game Created!');
 });
 
 router.post('/start', function (req, res) {
-    var currentGame = cg.get();
-    if (!currentGame) {
-        res.end('There is no game to start!');
-    } else {
-        currentGame.startGame();
-        res.end(util.format('Game "%s" started :)', currentGame.name));
-    }
+    cg.get(function (game) {
+        if (!game) {
+            res.end('There is no game to start!');
+        } else {
+            game.startGame();
+            cg.set(game, function (err, game) {
+                res.end(util.format('Game "%s" started :)', game.name));
+            });
+        }
+    });
 });
-
-//router.post('/createFighter', function(req, res) {
-//    res.end('Fighter created');
-//});
 
 module.exports = router;

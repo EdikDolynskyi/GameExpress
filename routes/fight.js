@@ -3,25 +3,30 @@ var router = express.Router();
 
 var cg = require('../singleton/currentGame');
 
-/*
-router.get('/inrangeof/:id', function(req, res) {
-    var currentGame = cg.get();
-    if (!currentGame)
-        return res.end('There no game');
+router.post('/:_id/:enemyId', function(req, res) {
+    cg.get(function(game) {
+        if (!game)
+            return res.end('There no game');
 
-    var id = req.params.id;
-    var man = currentGame.findFighter(id);
-    if (!man)
-        return res.end('There is no fighter with id: ' + id);
+        var id = req.params._id;
+        if (isNaN(id))
+            return res.end('_id  should be numbers');
 
-    var enemiesInRange = man.fightersInKickRange(currentGame.fighters);
+        var enemyId = req.params.enemyId;
+        if (isNaN(enemyId))
+            return res.end('enemyId  should be numbers');
 
-    res.json(enemiesInRange);
-});
-*/
+        var man = game.findFighter(id);
+        if (!man)
+            return res.end('There is no fighter with _id: ' + id);
 
-router.post('/:id/:enemyId', function(req, res) {
-    res.end('Ok, we fight');
+        var enemy = game.findFighter(enemyId);
+        man.fight(enemy);
+
+        cg.set(game, function() {
+            res.end('Ok, we fight');
+        });
+    });
 });
 
 
